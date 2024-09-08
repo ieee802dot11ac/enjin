@@ -1,14 +1,17 @@
 #include "stream.h"
 #include <cstdio>
 
-Stream::~Stream() {}
-
 FileStream::FileStream(const char* filename, bool ro) {
-    mFileObj = fopen(filename, ro ? "rb" : "ab+");
+    mFileObj = fopen(filename, ro ? "rb" : "wb+");
 }
 
 FileStream::~FileStream() {
     fclose(mFileObj);
+}
+
+bool FileStream::Fail() {
+    mFail = feof(mFileObj) | ferror(mFileObj);
+    return mFail;
 }
 
 int FileStream::ReadImpl(void* out, int len) {

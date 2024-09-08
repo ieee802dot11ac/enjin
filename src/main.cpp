@@ -2,6 +2,7 @@
 #include <SDL2/SDL_opengl.h>
 #include "rnd/mesh.h"
 #include "rnd/renderer.h"
+#include "serial/stream.h"
 #include <iostream>
 #include <stdint.h>
 
@@ -11,7 +12,12 @@ int main(int argc, char** argv) {
 	SDL_Event e; bool quit = false;
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 	glDisable(GL_CULL_FACE);
-	auto mesh = load_mesh("test.mesh");
+	Mesh* mesh = new Mesh;
+	{
+		FileStream fs("test2.xpmf", true);
+		mesh->Load(fs);
+	}
+	rnd->push_back(mesh); 
 	while (!quit) {
 		const char* err = SDL_GetError();
 		int gl_err = glGetError();
@@ -24,8 +30,19 @@ int main(int argc, char** argv) {
         	if (e.type == SDL_QUIT){
         	    quit = true;
         	}
+			if (e.type == SDL_KEYDOWN) {
+				if (e.key.keysym.sym == SDLK_UP) {
+					for (Vertex& v : mesh->mVerts) {
+						v.col += 0.1f;
+					}
+				} else if (e.key.keysym.sym == SDLK_DOWN) {
+					for (Vertex& v : mesh->mVerts) {
+						v.col -= 0.1f;
+					}
+				}
+			}
     	}
-		rnd->Draw(mesh);
+		rnd->Draw();
 	}
 	delete rnd;
 	SDL_Quit();

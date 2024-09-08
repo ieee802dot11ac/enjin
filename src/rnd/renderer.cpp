@@ -12,18 +12,16 @@ Renderer::Renderer() {
 }
 
 Renderer::~Renderer() {
+    for (Drawable* draw : mDraws) delete draw;
     SDL_GL_DeleteContext(mContext);
     SDL_DestroyWindow(mWindow); 
 }
 
-void Renderer::Draw(std::vector<Vector3> verts) {
+void Renderer::Draw() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	glBegin(GL_TRIANGLE_STRIP);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-	for (Vector3 vert : verts) {
-        glVertex3fv(vert); // :3
-    }
+	glBegin(GL_TRIANGLES);
+	glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
+    for (Drawable* draw : mDraws) draw->Draw();
 	glEnd();
 	SDL_GL_SwapWindow(mWindow);
 }

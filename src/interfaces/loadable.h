@@ -10,7 +10,6 @@
 #pragma once
 
 #include "serial/stream.h"
-#include <string>
 
 class Loadable {
     public:
@@ -18,6 +17,4 @@ class Loadable {
     virtual ~Loadable() {}
     virtual void Load(Stream&) = 0;
     virtual void Save(Stream&) = 0;
-
-    std::string mName;
 };

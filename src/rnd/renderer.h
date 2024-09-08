@@ -9,7 +9,7 @@
  * 
  */
 
-#include "math/vec.h"
+#include "interfaces/drawable.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
 #include <vector>
@@ -19,8 +19,10 @@ public:
 	Renderer();
 	virtual ~Renderer();
 	Renderer& operator=(const Renderer&) = delete;
-	virtual void Draw(std::vector<Vector3> verts);
+	virtual void Draw();
+	void push_back(Drawable* draw) { mDraws.push_back(draw); }
 	SDL_Window* mWindow;
 private:
 	SDL_GLContext mContext;
+	std::vector<Drawable*> mDraws;
 };

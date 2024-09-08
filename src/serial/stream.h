@@ -12,16 +12,20 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include "math/vec.h"
 
 class Stream {
     virtual int ReadImpl(void* data, int len) = 0;
     virtual int WriteImpl(const void* data, int len) = 0;
+    protected:
+    bool mFail;
     public:
     Stream() {}
-    virtual ~Stream();
+    virtual ~Stream() {}
+    virtual bool Fail() { return false; }
 
-    #define LOAD(type) Stream& operator<<(type& in) { ReadImpl(&in, sizeof(type)); return *this; }
-    #define SAVE(type) Stream& operator>>(type& in) { WriteImpl(&in, sizeof(type)); return *this; }
+    #define LOAD(type) Stream& operator>>(type& in) { if (!Fail()) ReadImpl(&in, sizeof(type)); return *this; }
+    #define SAVE(type) Stream& operator<<(type in) { if (!Fail()) WriteImpl(&in, sizeof(type)); return *this; }
     
     LOAD(uint8_t)
     LOAD(int8_t)
@@ -44,6 +48,12 @@ class Stream {
     SAVE(float_t)
     SAVE(double_t)
 
+    template <int T>
+    Stream& operator>>(Vector<T>& vec) { for (float& f : vec.flt) *this >> f; return *this; }
+
+    template <int T>
+    Stream& operator<<(Vector<T>& vec) { for (float f : vec.flt) *this << f; return *this; }
+
     #undef LOAD
     #undef SAVE
 };
@@ -52,6 +62,7 @@ class FileStream : public Stream {
     public:
     FileStream(const char* filename, bool ro);
     virtual ~FileStream();
+    virtual bool Fail();
 
     private:
     virtual int ReadImpl(void *data, int len);

@@ -9,16 +9,17 @@
 
 #pragma once
 
-class Vector3 {
-    private:
-    float x, y, z;
-    public:
-    constexpr float& X() { return x; }
-    constexpr float& Y() { return y; }
-    constexpr float& Z() { return z; }
+#include <SDL2/SDL_assert.h>
 
-    Vector3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
-    Vector3() : x(0), y(0), z(0) {}
-    float operator[](int i) { return ((float*)this)[i]; }
+template <int T>
+class Vector {
+    public:
+    float flt[T];
+
+    Vector() : flt() {}
+    float operator[](int i) { SDL_assert(i < T); return ((float*)this)[i]; }
     operator float*() { return ((float*)this); }
+
+    Vector& operator +=(float diff) { for (float& f : flt) f += diff; return *this; }
+    Vector& operator -=(float diff) { for (float& f : flt) f -= diff; return *this; }
 };
