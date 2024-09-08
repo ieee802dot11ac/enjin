@@ -16,6 +16,10 @@ file(GLOB_RECURSE INC_FILES "src/*.h")
 # Add source files to the executable
 add_executable(game ${SRC_FILES} ${INC_FILES})
 
+# Grab SDL & OpenGL
+find_library(SDL_LIB SDL2)
+find_library(GL_LIB GL)
+
 # Set the include directory for the executable
 target_include_directories(game PRIVATE "src")
 
@@ -35,3 +39,5 @@ execute_process(
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
         "-DGIT_COMMIT_HASH=\"${GIT_COMMIT_HASH}\"")
+
+target_link_libraries(game PRIVATE "${SDL_LIB}" "${GL_LIB}")
