@@ -20,9 +20,13 @@ public:
 	virtual ~Renderer();
 	Renderer& operator=(const Renderer&) = delete;
 	virtual void Draw();
+
 	void push_back(Drawable* draw) { mDraws.push_back(draw); }
-	SDL_Window* mWindow;
+
+	static void InitGL();
+
 private:
+	SDL_Window* mWindow;
 	SDL_GLContext mContext;
 	std::vector<Drawable*> mDraws;
 };

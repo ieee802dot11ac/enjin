@@ -1,8 +1,6 @@
 #include "mesh.h"
 #include <SDL2/SDL_assert.h>
 #include <SDL2/SDL_opengl.h>
-#include <fstream>
-#include <iostream>
 
 int Mesh::sRevision = 0;
 const int MESH_VERSION = 1;

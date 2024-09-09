@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_opengl.h>
 #include "rnd/mesh.h"
 #include "rnd/renderer.h"
@@ -8,16 +9,18 @@
 
 int main(int argc, char** argv) {
 	SDL_Init(SDL_INIT_EVERYTHING);
+
 	Renderer* rnd = new Renderer;
-	SDL_Event e; bool quit = false;
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-	glDisable(GL_CULL_FACE);
+	Renderer::InitGL();
+
 	Mesh* mesh = new Mesh;
 	{
 		FileStream fs("test2.xpmf", true);
 		mesh->Load(fs);
 	}
 	rnd->push_back(mesh); 
+
+	SDL_Event e; bool quit = false;
 	while (!quit) {
 		const char* err = SDL_GetError();
 		int gl_err = glGetError();
@@ -33,12 +36,34 @@ int main(int argc, char** argv) {
 			if (e.type == SDL_KEYDOWN) {
 				if (e.key.keysym.sym == SDLK_UP) {
 					for (Vertex& v : mesh->mVerts) {
-						v.col += 0.1f;
+						v.pos.flt[2] += 0.1f;
 					}
 				} else if (e.key.keysym.sym == SDLK_DOWN) {
 					for (Vertex& v : mesh->mVerts) {
-						v.col -= 0.1f;
+						v.pos.flt[2] -= 0.1f;
 					}
+				}
+				if (e.key.keysym.sym == SDLK_LEFT) {
+					for (Vertex& v : mesh->mVerts) {
+						v.pos.flt[0] -= 0.1f;
+					}
+				} else if (e.key.keysym.sym == SDLK_RIGHT) {
+					for (Vertex& v : mesh->mVerts) {
+						v.pos.flt[0] += 0.1f;
+					}
+				}
+				if (e.key.keysym.sym == SDLK_SPACE) {
+					mesh->mVerts[0].col.flt[0] = 1.0f;
+					mesh->mVerts[0].col.flt[1] = 0.0f;
+					mesh->mVerts[0].col.flt[2] = 0.0f;
+
+					mesh->mVerts[1].col.flt[0] = 0.0f;
+					mesh->mVerts[1].col.flt[1] = 1.0f;
+					mesh->mVerts[1].col.flt[2] = 0.0f;
+
+					mesh->mVerts[2].col.flt[0] = 0.0f;
+					mesh->mVerts[2].col.flt[1] = 0.0f;
+					mesh->mVerts[2].col.flt[2] = 1.0f;
 				}
 			}
     	}
