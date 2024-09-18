@@ -14,10 +14,19 @@ bool FileStream::Fail() {
     return mFail;
 }
 
-int FileStream::ReadImpl(void* out, int len) {
-    return fread(out, len, 1, mFileObj);
+int FileStream::_ReadLE(void* data, int len) {
+
 }
 
-int FileStream::WriteImpl(const void* in, int len) {
-    return fwrite(in, len, 1, mFileObj);
+int FileStream::_ReadBE(void* data, int len) {
+
 }
+
+int FileStream::_WriteLE(const void* data, int len) {
+
+}
+
+int FileStream::_WriteBE(const void* data, int len) {
+
+}
+

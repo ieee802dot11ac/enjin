@@ -12,11 +12,18 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include <arpa/inet.h>
 #include "math/vec.h"
 
+#define IS_BIG_ENDIAN (ntohs(0xABCD) == 0xABCD) // TODO replace with compile-time define
+
 class Stream {
-    virtual int ReadImpl(void* data, int len) = 0;
-    virtual int WriteImpl(const void* data, int len) = 0;
+    virtual int Read(void* data, int len) { return (len > 1 && IS_BIG_ENDIAN) ? _ReadBE(data, len) : _ReadLE(data, len); }
+    virtual int Write(const void* data, int len) { return (len > 1 && IS_BIG_ENDIAN) ? _WriteBE(data, len) : _WriteLE(data, len); }
+    virtual int _ReadLE(void* data, int len) = 0;
+    virtual int _ReadBE(void* data, int len) = 0;
+    virtual int _WriteLE(const void* data, int len) = 0;
+    virtual int _WriteBE(const void* data, int len) = 0;
     protected:
     bool mFail;
     public:
@@ -24,8 +31,8 @@ class Stream {
     virtual ~Stream() {}
     virtual bool Fail() { return false; }
 
-    #define LOAD(type) Stream& operator>>(type& in) { if (!Fail()) ReadImpl(&in, sizeof(type)); return *this; }
-    #define SAVE(type) Stream& operator<<(type in) { if (!Fail()) WriteImpl(&in, sizeof(type)); return *this; }
+    #define LOAD(type) Stream& operator>>(type& in) { if (!Fail()) Read(&in, sizeof(type)); return *this; }
+    #define SAVE(type) Stream& operator<<(type in) { if (!Fail()) Write(&in, sizeof(type)); return *this; }
     
     LOAD(uint8_t)
     LOAD(int8_t)
@@ -65,8 +72,10 @@ class FileStream : public Stream {
     virtual bool Fail();
 
     private:
-    virtual int ReadImpl(void *data, int len);
-    virtual int WriteImpl(const void *data, int len);
+    virtual int _ReadLE(void* data, int len);
+    virtual int _ReadBE(void* data, int len);
+    virtual int _WriteLE(const void* data, int len);
+    virtual int _WriteBE(const void* data, int len);
 
     FILE* mFileObj;
 };

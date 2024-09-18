@@ -22,11 +22,12 @@ int main(int argc, char** argv) {
 
 	SDL_Event e; bool quit = false;
 	while (!quit) {
-		const char* err = SDL_GetError();
+		const char* err = SDL_GetError(); bool sdl_err = strcmp(err, "");
 		int gl_err = glGetError();
-		if (strcmp(err, "") || gl_err != 0) {
-			std::cerr << "oh fuck! SDL error: " << err << std::endl;
-			std::cerr << "GL error: " << gl_err << std::endl;
+		if (sdl_err || gl_err != 0) {
+			std::cerr << "oh fuck!" << std::endl;
+			if (sdl_err) std::cerr << "SDL error: " << err << std::endl;
+			if (gl_err) std::cerr << "GL error: " << gl_err << std::endl;
 			exit(420);
 		}
     	while (SDL_PollEvent(&e)) {
@@ -36,11 +37,11 @@ int main(int argc, char** argv) {
 			if (e.type == SDL_KEYDOWN) {
 				if (e.key.keysym.sym == SDLK_UP) {
 					for (Vertex& v : mesh->mVerts) {
-						v.pos.flt[2] += 0.1f;
+						v.pos.flt[1] += 0.1f;
 					}
 				} else if (e.key.keysym.sym == SDLK_DOWN) {
 					for (Vertex& v : mesh->mVerts) {
-						v.pos.flt[2] -= 0.1f;
+						v.pos.flt[1] -= 0.1f;
 					}
 				}
 				if (e.key.keysym.sym == SDLK_LEFT) {
