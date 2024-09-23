@@ -12,14 +12,12 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
-#include <arpa/inet.h>
-#include "math/vec.h"
+#include <arpa/inet.h> // for ntoh*
+#include "types.h"
 
 #define IS_BIG_ENDIAN (ntohs(0xABCD) == 0xABCD) // TODO replace with compile-time define
 
 class Stream {
-    virtual int Read(void* data, int len) { return (len > 1 && IS_BIG_ENDIAN) ? _ReadBE(data, len) : _ReadLE(data, len); }
-    virtual int Write(const void* data, int len) { return (len > 1 && IS_BIG_ENDIAN) ? _WriteBE(data, len) : _WriteLE(data, len); }
     virtual int _ReadLE(void* data, int len) = 0;
     virtual int _ReadBE(void* data, int len) = 0;
     virtual int _WriteLE(const void* data, int len) = 0;
@@ -30,6 +28,8 @@ class Stream {
     Stream() {}
     virtual ~Stream() {}
     virtual bool Fail() { return false; }
+    int Read(void* data, int len);
+    int Write(const void* data, int len);
 
     #define LOAD(type) Stream& operator>>(type& in) { if (!Fail()) Read(&in, sizeof(type)); return *this; }
     #define SAVE(type) Stream& operator<<(type in) { if (!Fail()) Write(&in, sizeof(type)); return *this; }
@@ -55,11 +55,16 @@ class Stream {
     SAVE(float_t)
     SAVE(double_t)
 
-    template <int T>
-    Stream& operator>>(Vector<T>& vec) { for (float& f : vec.flt) *this >> f; return *this; }
+    LOAD(Vector2)
+    LOAD(Vector3)
+    LOAD(Vector4)
+    SAVE(Vector2)
+    SAVE(Vector3)
+    SAVE(Vector4)
 
-    template <int T>
-    Stream& operator<<(Vector<T>& vec) { for (float f : vec.flt) *this << f; return *this; }
+    // requires more smarts than blind R/Ws due to implementation specifics
+    Stream& operator>>(Matrix& in); 
+    Stream& operator<<(const Matrix in);
 
     #undef LOAD
     #undef SAVE

@@ -29,5 +29,4 @@ void Renderer::Draw() {
 void Renderer::InitGL() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
 }

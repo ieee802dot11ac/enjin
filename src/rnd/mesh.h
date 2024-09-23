@@ -11,15 +11,15 @@
 
 #include "interfaces/drawable.h"
 #include "interfaces/loadable.h"
-#include "math/vec.h"
+#include "types.h"
 #include <vector>
 
 struct Vertex {
     public:
-    Vector<3> pos;
-    Vector<3> norm;
-    Vector<2> uv;
-    Vector<4> col;
+    Vector3 pos;
+    Vector3 norm;
+    Vector2 uv;
+    Vector4 col;
 
     void Load(Stream&);
     void Save(Stream&);

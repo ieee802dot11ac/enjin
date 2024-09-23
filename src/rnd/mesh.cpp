@@ -56,19 +56,19 @@ void Mesh::Save(Stream& strm) {
 void Mesh::Draw() {
     // TODO init tex
     for (Face& f : mFaces) {
-        glColor4fv(mVerts[f.idx0].col);
-        glVertex3fv(mVerts[f.idx0].pos);
-        glNormal3fv(mVerts[f.idx0].norm);
-        glTexCoord2fv(mVerts[f.idx0].uv);
+        glColor4fv((float*)&mVerts[f.idx0].col);
+        glVertex3fv((float*)&mVerts[f.idx0].pos);
+        glNormal3fv((float*)&mVerts[f.idx0].norm);
+        glTexCoord2fv((float*)&mVerts[f.idx0].uv);
 
-        glColor4fv(mVerts[f.idx1].col);
-        glVertex3fv(mVerts[f.idx1].pos);
-        glNormal3fv(mVerts[f.idx1].norm);
-        glTexCoord2fv(mVerts[f.idx1].uv);
+        glColor4fv((float*)&mVerts[f.idx1].col);
+        glVertex3fv((float*)&mVerts[f.idx1].pos);
+        glNormal3fv((float*)&mVerts[f.idx1].norm);
+        glTexCoord2fv((float*)&mVerts[f.idx1].uv);
 
-        glColor4fv(mVerts[f.idx2].col);
-        glVertex3fv(mVerts[f.idx2].pos);
-        glNormal3fv(mVerts[f.idx2].norm);
-        glTexCoord2fv(mVerts[f.idx2].uv);
+        glColor4fv((float*)&mVerts[f.idx2].col);
+        glVertex3fv((float*)&mVerts[f.idx2].pos);
+        glNormal3fv((float*)&mVerts[f.idx2].norm);
+        glTexCoord2fv((float*)&mVerts[f.idx2].uv);
     }
 }

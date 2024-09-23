@@ -37,34 +37,34 @@ int main(int argc, char** argv) {
 			if (e.type == SDL_KEYDOWN) {
 				if (e.key.keysym.sym == SDLK_UP) {
 					for (Vertex& v : mesh->mVerts) {
-						v.pos.flt[1] += 0.1f;
+						v.pos.y += 0.1f;
 					}
 				} else if (e.key.keysym.sym == SDLK_DOWN) {
 					for (Vertex& v : mesh->mVerts) {
-						v.pos.flt[1] -= 0.1f;
+						v.pos.y -= 0.1f;
 					}
 				}
 				if (e.key.keysym.sym == SDLK_LEFT) {
 					for (Vertex& v : mesh->mVerts) {
-						v.pos.flt[0] -= 0.1f;
+						v.pos.x -= 0.1f;
 					}
 				} else if (e.key.keysym.sym == SDLK_RIGHT) {
 					for (Vertex& v : mesh->mVerts) {
-						v.pos.flt[0] += 0.1f;
+						v.pos.x += 0.1f;
 					}
 				}
 				if (e.key.keysym.sym == SDLK_SPACE) {
-					mesh->mVerts[0].col.flt[0] = 1.0f;
-					mesh->mVerts[0].col.flt[1] = 0.0f;
-					mesh->mVerts[0].col.flt[2] = 0.0f;
+					mesh->mVerts[0].col.x = 1.0f;
+					mesh->mVerts[0].col.y = 0.0f;
+					mesh->mVerts[0].col.z = 0.0f;
 
-					mesh->mVerts[1].col.flt[0] = 0.0f;
-					mesh->mVerts[1].col.flt[1] = 1.0f;
-					mesh->mVerts[1].col.flt[2] = 0.0f;
+					mesh->mVerts[1].col.x = 0.0f;
+					mesh->mVerts[1].col.y = 1.0f;
+					mesh->mVerts[1].col.z = 0.0f;
 
-					mesh->mVerts[2].col.flt[0] = 0.0f;
-					mesh->mVerts[2].col.flt[1] = 0.0f;
-					mesh->mVerts[2].col.flt[2] = 1.0f;
+					mesh->mVerts[2].col.x = 0.0f;
+					mesh->mVerts[2].col.y = 0.0f;
+					mesh->mVerts[2].col.z = 1.0f;
 				}
 			}
     	}
