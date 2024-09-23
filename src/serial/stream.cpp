@@ -1,22 +1,8 @@
 #include "stream.h"
-#include <SDL2/SDL_assert.h>
-#include <algorithm>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-
-int Stream::Read(void* data, int len) { 
-    if (len > 1 && IS_BIG_ENDIAN) {
-        return _ReadBE(data, len); 
-    } else return _ReadLE(data, len); 
-}
-
-int Stream::Write(const void* data, int len) { 
-    if (len > 1 && IS_BIG_ENDIAN) {
-        return _WriteBE(data, len);
-    } else return _WriteLE(data, len); 
-}
 
 Stream& Stream::operator>>(Matrix& in) {
     uint32_t w,h;
@@ -45,6 +31,25 @@ Stream& Stream::operator<<(const Matrix in) {
     return *this;
 }
 
+Stream& Stream::operator>>(std::string& str) {
+    uint32_t len;
+    *this >> len;
+    str.reserve(len);
+    for (int i = 0; i < len; i++) {
+        int8_t c;
+        *this >> c;
+        str.push_back(c);
+    }
+    return *this;
+}
+
+Stream& Stream::operator<<(const std::string str) {
+    *this << (uint32_t)str.length();
+    for (char c : str) *this << c;
+    return *this;
+}
+
+
 FileStream::FileStream(const char* filename, bool ro) {
     mFileObj = fopen(filename, ro ? "rb" : "wb+");
     if (mFileObj == NULL) throw std::runtime_error("Cannot open file");
@@ -59,45 +64,10 @@ bool FileStream::Fail() {
     return mFail;
 }
 
-int FileStream::_ReadLE(void* data, int len) {
-    uint8_t buf[len];
-    size_t ret = fread(buf, len, 1, mFileObj);
-    if (IS_BIG_ENDIAN) {
-        SDL_assert(len % 2 != 1);
-        std::reverse(buf, buf + len);
-    }
-    memcpy(data, buf, len);
-    return ret;
+int FileStream::Read(void* data, int len) {
+    return fread(data, len, 1, mFileObj);
 }
 
-int FileStream::_ReadBE(void* data, int len) {
-    uint8_t buf[len];
-    size_t ret = fread(buf, len, 1, mFileObj);
-    if (!IS_BIG_ENDIAN) {
-        SDL_assert(len % 2 != 1);
-        std::reverse(buf, buf + len);
-    }
-    memcpy(data, buf, len);
-    return ret;
+int FileStream::Write(const void* data, int len) {
+    return fwrite(data, len, 1, mFileObj);
 }
-
-int FileStream::_WriteLE(const void* data, int len) {
-    uint8_t buf[len];
-    memcpy(buf, data, len);
-    if (IS_BIG_ENDIAN) {
-        SDL_assert(len % 2 != 1);
-        std::reverse(buf, buf + len);
-    }
-    return fwrite(buf, len, 1, mFileObj);
-}
-
-int FileStream::_WriteBE(const void* data, int len) {
-    uint8_t buf[len];
-    memcpy(buf, data, len);
-    if (!IS_BIG_ENDIAN) {
-        SDL_assert(len % 2 != 1);
-        std::reverse(buf, buf + len);
-    }
-    return fwrite(buf, len, 1, mFileObj);
-}
-

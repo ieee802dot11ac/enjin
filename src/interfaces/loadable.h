@@ -9,7 +9,9 @@
 
 #pragma once
 
-#include "serial/stream.h"
+#include <string>
+
+class Stream; // forward decl
 
 class ILoadable {
     public:
@@ -17,4 +19,6 @@ class ILoadable {
     virtual ~ILoadable() {}
     virtual void Load(Stream&) = 0;
     virtual void Save(Stream&) = 0;
+
+    std::string mFilename;
 };

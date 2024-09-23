@@ -11,6 +11,7 @@
 
 #include "interfaces/drawable.h"
 #include "interfaces/loadable.h"
+#include "serial/stream.h"
 #include "types.h"
 #include <vector>
 

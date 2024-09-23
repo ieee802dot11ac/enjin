@@ -13,23 +13,20 @@
 #include <cstdint>
 #include <cstdio>
 #include <arpa/inet.h> // for ntoh*
+#include <memory>
 #include "types.h"
 
 #define IS_BIG_ENDIAN (ntohs(0xABCD) == 0xABCD) // TODO replace with compile-time define
 
 class Stream {
-    virtual int _ReadLE(void* data, int len) = 0;
-    virtual int _ReadBE(void* data, int len) = 0;
-    virtual int _WriteLE(const void* data, int len) = 0;
-    virtual int _WriteBE(const void* data, int len) = 0;
     protected:
     bool mFail;
     public:
     Stream() {}
     virtual ~Stream() {}
     virtual bool Fail() { return false; }
-    int Read(void* data, int len);
-    int Write(const void* data, int len);
+    virtual int Read(void* data, int len) = 0;
+    virtual int Write(const void* data, int len) = 0;
 
     #define LOAD(type) Stream& operator>>(type& in) { if (!Fail()) Read(&in, sizeof(type)); return *this; }
     #define SAVE(type) Stream& operator<<(type in) { if (!Fail()) Write(&in, sizeof(type)); return *this; }
@@ -65,6 +62,22 @@ class Stream {
     // requires more smarts than blind R/Ws due to implementation specifics
     Stream& operator>>(Matrix& in); 
     Stream& operator<<(const Matrix in);
+    
+    Stream& operator>>(std::string& str);
+    Stream& operator<<(const std::string str);
+
+    template <typename T> Stream& operator>>(std::shared_ptr<T>& in) {
+        class ILoadable* ldbl = dynamic_cast<class ILoadable*>(in.get()); // cause concepts are nonsense
+        if (ldbl != NULL) {
+            *this >> ldbl->mFilename;
+        }
+    }
+    template <typename T> Stream& operator<<(const std::shared_ptr<T>& in) {
+        class ILoadable* ldbl = dynamic_cast<class ILoadable*>(in.get());
+        if (ldbl != NULL) {
+            *this << ldbl->mFilename;
+        }
+    }
 
     #undef LOAD
     #undef SAVE
@@ -75,12 +88,9 @@ class FileStream : public Stream {
     FileStream(const char* filename, bool ro);
     virtual ~FileStream();
     virtual bool Fail();
+    virtual int Read(void* data, int len);
+    virtual int Write(const void* data, int len);
 
     private:
-    virtual int _ReadLE(void* data, int len);
-    virtual int _ReadBE(void* data, int len);
-    virtual int _WriteLE(const void* data, int len);
-    virtual int _WriteBE(const void* data, int len);
-
     FILE* mFileObj;
 };
