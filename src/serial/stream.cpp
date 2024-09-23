@@ -47,6 +47,7 @@ Stream& Stream::operator<<(const Matrix in) {
 
 FileStream::FileStream(const char* filename, bool ro) {
     mFileObj = fopen(filename, ro ? "rb" : "wb+");
+    if (mFileObj == NULL) throw std::runtime_error("Cannot open file");
 }
 
 FileStream::~FileStream() {

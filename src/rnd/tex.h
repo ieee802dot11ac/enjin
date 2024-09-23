@@ -23,7 +23,9 @@ class Texture : public ILoadable {
 
     Texture();
     virtual ~Texture();
-    
+    virtual void Load(Stream&);
+    virtual void Save(Stream&);
+
     void UploadToVRAM();
     private:
 
