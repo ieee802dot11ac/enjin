@@ -34,7 +34,7 @@ struct Face {
     void Save(Stream& strm) { strm << idx0 << idx1 << idx2; }
 };
 
-class Mesh : public Loadable, public Drawable {
+class Mesh : public ILoadable, public IDrawable {
 public:
     Mesh();
     virtual ~Mesh();

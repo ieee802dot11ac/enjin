@@ -54,6 +54,7 @@ void Mesh::Save(Stream& strm) {
 }
 
 void Mesh::Draw() {
+    // TODO init tex
     for (Face& f : mFaces) {
         glColor4fv(mVerts[f.idx0].col);
         glVertex3fv(mVerts[f.idx0].pos);

@@ -9,9 +9,9 @@
 
 #pragma once
 
-class Drawable {
+class IDrawable {
     public:
-    Drawable() {}
-    virtual ~Drawable() {}
+    IDrawable() {}
+    virtual ~IDrawable() {}
     virtual void Draw() = 0;
 };

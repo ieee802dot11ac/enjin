@@ -11,10 +11,10 @@
 
 #include "serial/stream.h"
 
-class Loadable {
+class ILoadable {
     public:
-    Loadable() {}
-    virtual ~Loadable() {}
+    ILoadable() {}
+    virtual ~ILoadable() {}
     virtual void Load(Stream&) = 0;
     virtual void Save(Stream&) = 0;
 };

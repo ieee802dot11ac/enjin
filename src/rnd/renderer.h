@@ -21,12 +21,12 @@ public:
 	Renderer& operator=(const Renderer&) = delete;
 	virtual void Draw();
 
-	void push_back(Drawable* draw) { mDraws.push_back(draw); }
+	void push_back(IDrawable* draw) { mDraws.push_back(draw); }
 
 	static void InitGL();
 
 private:
 	SDL_Window* mWindow;
 	SDL_GLContext mContext;
-	std::vector<Drawable*> mDraws;
+	std::vector<IDrawable*> mDraws;
 };
