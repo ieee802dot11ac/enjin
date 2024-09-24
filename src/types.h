@@ -1,3 +1,12 @@
+/**
+ * @file types.h
+ * @author ieee 802.11ac
+ * @brief Common typedefs
+ * @version 0.1
+ * @date 2024-09-23
+ * 
+ */
+
 #pragma once
 
 #include <zmath/matrix.hpp>

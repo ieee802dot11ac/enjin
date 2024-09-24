@@ -13,6 +13,7 @@
 #include "interfaces/loadable.h"
 #include "serial/stream.h"
 #include "types.h"
+#include <fstream>
 #include <vector>
 
 struct Vertex {
@@ -42,6 +43,8 @@ public:
     virtual void Load(Stream&);
     virtual void Save(Stream&);
     virtual void Draw();
+
+    void ImportOBJ(std::ifstream);
 //private:
     std::vector<Vertex> mVerts;
     std::vector<Face> mFaces;
