@@ -74,28 +74,48 @@ void Mesh::Draw() {
     }
 }
 
-void Mesh::ImportOBJ(std::ifstream strm) {
+void Mesh::ImportOBJ(std::ifstream& strm) {
     char linebuf[256] = {0};
+    uint32_t vtx_pos_ct, vtx_norm_ct, vtx_uv_ct;
     while (!strm.fail()) {
         strm.getline(linebuf, 256);
         if (linebuf[0] == 'v') {
             Vertex vtx;
+            bool new_pos_vtx, new_norm_vtx, new_uv_vtx;
             switch (linebuf[1]) {
                 case ' ':
+                    vtx_pos_ct++;
+                    new_pos_vtx = true;
                     SDL_assert(sscanf(linebuf, "v %f %f %f", &vtx.pos.x, &vtx.pos.y, &vtx.pos.z) == 3);
                     break;
                 case 'n':
+                    vtx_norm_ct++;
+                    new_norm_vtx = true;
                     SDL_assert(sscanf(linebuf, "vn %f %f %f", &vtx.norm.x, &vtx.norm.y, &vtx.norm.z) == 3);
                     break;
                 case 't':
+                    vtx_uv_ct++;
+                    new_uv_vtx = true;
                     SDL_assert(sscanf(linebuf, "vt %f %f", &vtx.uv.x, &vtx.uv.y) == 2);
                 default:
                     break;
             }
-            mVerts.push_back(vtx);
+            if (new_pos_vtx) {
+                new_pos_vtx = false;
+                mVerts.push_back(vtx);
+            } else if (vtx_norm_ct == vtx_pos_ct && new_norm_vtx) {
+                new_norm_vtx = false;
+                mVerts[vtx_pos_ct].norm = vtx.norm;
+            } else if (vtx_uv_ct == vtx_pos_ct && new_uv_vtx) {
+                new_uv_vtx = false;
+                mVerts[vtx_pos_ct].uv = vtx.uv;
+            }
         } else if (linebuf[0] == 'f') {
             Face f;
-            SDL_assert(sscanf(linebuf, "f %i/ / %i/ / %i/ / ", &f.idx0, &f.idx1, &f.idx2) >= 3);
+            SDL_assert(sscanf(linebuf, "f %i/%*i/%*i %i/%*i/%*i %i/%*i/%*i", &f.idx0, &f.idx1, &f.idx2) >= 3);
+            f.idx0--;
+            f.idx1--;
+            f.idx2--;
             mFaces.push_back(f);
         }
     }

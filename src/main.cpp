@@ -15,8 +15,12 @@ int main(int argc, char** argv) {
 
 	Mesh* mesh = new Mesh;
 	{
-		FileStream fs("test2.xpmf", true);
-		mesh->Load(fs);
+		std::ifstream fs; fs.open("/tmp/neut.obj");
+		mesh->ImportOBJ(fs);
+		fs.close();
+		for (Vertex& v : mesh->mVerts) {
+			v.pos.x *= 3; v.pos.y *= 3;
+		}
 	}
 	rnd->push_back(mesh); 
 
@@ -37,20 +41,20 @@ int main(int argc, char** argv) {
 			if (e.type == SDL_KEYDOWN) {
 				if (e.key.keysym.sym == SDLK_UP) {
 					for (Vertex& v : mesh->mVerts) {
-						v.pos.y += 0.1f;
+						v.pos.y -= 0.1f;
 					}
 				} else if (e.key.keysym.sym == SDLK_DOWN) {
 					for (Vertex& v : mesh->mVerts) {
-						v.pos.y -= 0.1f;
+						v.pos.y += 0.1f;
 					}
 				}
 				if (e.key.keysym.sym == SDLK_LEFT) {
 					for (Vertex& v : mesh->mVerts) {
-						v.pos.x -= 0.1f;
+						v.pos.x += 0.1f;
 					}
 				} else if (e.key.keysym.sym == SDLK_RIGHT) {
 					for (Vertex& v : mesh->mVerts) {
-						v.pos.x += 0.1f;
+						v.pos.x -= 0.1f;
 					}
 				}
 				if (e.key.keysym.sym == SDLK_SPACE) {

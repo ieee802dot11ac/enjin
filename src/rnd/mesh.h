@@ -11,6 +11,7 @@
 
 #include "interfaces/drawable.h"
 #include "interfaces/loadable.h"
+#include "rnd/tex.h"
 #include "serial/stream.h"
 #include "types.h"
 #include <fstream>
@@ -44,10 +45,11 @@ public:
     virtual void Save(Stream&);
     virtual void Draw();
 
-    void ImportOBJ(std::ifstream);
+    void ImportOBJ(std::ifstream&);
 //private:
     std::vector<Vertex> mVerts;
     std::vector<Face> mFaces;
+    std::shared_ptr<Texture> mTexture;
 public:
 
     static int sRevision;
