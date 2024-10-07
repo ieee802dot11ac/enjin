@@ -22,6 +22,7 @@ public:
 	virtual void Draw();
 
 	void push_back(IDrawable* draw) { mDraws.push_back(draw); }
+	void pop_back() { mDraws.pop_back(); }
 
 	static void InitGL();
 

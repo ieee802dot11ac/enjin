@@ -30,13 +30,13 @@ void Renderer::Draw() {
 void Renderer::InitGL() {
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
-	//glDisable(GL_CULL_FACE);
+	glDisable(GL_CULL_FACE);
 
 	const float DEG2RAD = acos(-1.0f) / 180;
 	const float front = 0.1;
 	const float back = 10;
 	
-	float tangent = tan(60.0/2 * DEG2RAD);		// tangent of half fovY
+	float tangent = tan(100.0/2 * DEG2RAD);	// tangent of half fovY
 	float top = front * tangent;				// half height of near plane
 	float right = top * (4.0/3.0);				// half width of near plane
 	Matrix mtx(4,4);
@@ -45,9 +45,9 @@ void Renderer::InitGL() {
 	mtx.get_mut(1, 1) = front/top;
 	mtx.get_mut(2, 2) = -(back + front) / (back - front);
 	mtx.get_mut(2, 3) = -1;
-    mtx.get_mut(3, 2) = -(2 * back * front) / (back - front);
-    mtx.get_mut(3, 3) =  0;
+	mtx.get_mut(3, 2) = -(2 * back * front) / (back - front);
+	mtx.get_mut(3, 3) =  0;
 	
 	glFrustum(-right, right, -top, top, front, back);
-	glMultMatrixf((float*)&mtx);
+	glMultMatrixf(*(float**)&mtx);
 }

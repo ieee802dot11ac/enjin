@@ -51,6 +51,6 @@ public:
     std::vector<Face> mFaces;
     std::shared_ptr<Texture> mTexture;
 public:
-
+    static bool sWireframe;
     static int sRevision;
 };

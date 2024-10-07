@@ -4,6 +4,7 @@
 #include <cstdio>
 
 int Mesh::sRevision = 0;
+bool Mesh::sWireframe = false;
 const int MESH_VERSION = 1;
 
 void Vertex::Load(Stream& strm) {
@@ -57,6 +58,10 @@ void Mesh::Save(Stream& strm) {
 void Mesh::Draw() {
     // TODO init tex
     for (Face& f : mFaces) {
+        if (sWireframe) {
+            glEnd();
+            glBegin(GL_LINE_LOOP);
+        }
         glColor4fv((float*)&mVerts[f.idx0].col);
         glVertex3fv((float*)&mVerts[f.idx0].pos);
         glNormal3fv((float*)&mVerts[f.idx0].norm);
@@ -71,6 +76,10 @@ void Mesh::Draw() {
         glVertex3fv((float*)&mVerts[f.idx2].pos);
         glNormal3fv((float*)&mVerts[f.idx2].norm);
         glTexCoord2fv((float*)&mVerts[f.idx2].uv);
+        if (sWireframe) {
+            glEnd();
+            glBegin(GL_TRIANGLES);
+        }
     }
 }
 
@@ -87,6 +96,7 @@ void Mesh::ImportOBJ(std::ifstream& strm) {
                     vtx_pos_ct++;
                     new_pos_vtx = true;
                     SDL_assert(sscanf(linebuf, "v %f %f %f", &vtx.pos.x, &vtx.pos.y, &vtx.pos.z) == 3);
+                    vtx.pos.z = -vtx.pos.z;
                     break;
                 case 'n':
                     vtx_norm_ct++;
