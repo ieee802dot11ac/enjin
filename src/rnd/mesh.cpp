@@ -62,6 +62,11 @@ void Mesh::Draw() {
             glEnd();
             glBegin(GL_LINE_LOOP);
         }
+
+        if (mTexture) {
+            mTexture->SetActiveTexture();
+        }
+
         glColor4fv((float*)&mVerts[f.idx0].col);
         glVertex3fv((float*)&mVerts[f.idx0].pos);
         glNormal3fv((float*)&mVerts[f.idx0].norm);
@@ -83,12 +88,15 @@ void Mesh::Draw() {
     }
 }
 
+
+/** Uses a unique variant of Wavefront where all vertex types share enumeration, and a `tf` command for linking a texture file. */
 void Mesh::ImportOBJ(std::ifstream& strm) {
     char linebuf[256] = {0};
     uint32_t vtx_pos_ct, vtx_norm_ct, vtx_uv_ct;
     while (!strm.fail()) {
         strm.getline(linebuf, 256);
-        if (linebuf[0] == 'v') {
+        switch (linebuf[0]) {
+        case 'v': {
             Vertex vtx;
             bool new_pos_vtx, new_norm_vtx, new_uv_vtx;
             switch (linebuf[1]) {
@@ -120,13 +128,23 @@ void Mesh::ImportOBJ(std::ifstream& strm) {
                 new_uv_vtx = false;
                 mVerts[vtx_pos_ct].uv = vtx.uv;
             }
-        } else if (linebuf[0] == 'f') {
+            break;
+        }
+        case 'f': {
             Face f;
-            SDL_assert(sscanf(linebuf, "f %i/%*i/%*i %i/%*i/%*i %i/%*i/%*i", &f.idx0, &f.idx1, &f.idx2) >= 3);
+            SDL_assert(sscanf(linebuf, "f %i %i %i", &f.idx0, &f.idx1, &f.idx2) == 3);
             f.idx0--;
             f.idx1--;
             f.idx2--;
             mFaces.push_back(f);
+            break;
+        }
+        case 't': {
+            if (linebuf[1] == 'f') {
+                char fname[256];
+                SDL_assert(sscanf(linebuf, "tf %s", fname) == 1);
+            }
+        }
         }
     }
 }

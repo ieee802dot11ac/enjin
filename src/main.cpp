@@ -3,7 +3,6 @@
 #include <SDL2/SDL_opengl.h>
 #include "rnd/mesh.h"
 #include "rnd/renderer.h"
-#include "serial/stream.h"
 #include <iostream>
 #include <stdint.h>
 
@@ -11,6 +10,7 @@
 
 int main(int argc, char** argv) {
 	SDL_Init(SDL_INIT_EVERYTHING);
+	Texture::Init();
 
 	Renderer* rnd = new Renderer;
 	Renderer::InitGL();
@@ -19,26 +19,8 @@ int main(int argc, char** argv) {
 	{
 		std::ifstream fs; fs.open(OBJNAME);
 		mesh->ImportOBJ(fs);
-		fs.close();
-		for (Vertex& v : mesh->mVerts) {
-		//	v.pos.x *= 3; v.pos.y *= 3;
-		}
-		FileStream fs2("test.xpmf", false);
-		mesh->Save(fs2);
+		fs.close();		
 	}
-	
-	Mesh* mesh_static = new Mesh;
-	{
-		mesh_static->mVerts.reserve(4);
-		mesh_static->mVerts[0].pos = {0.25, 0.25, -0.5};
-		mesh_static->mVerts[1].pos = {0.75, 0.25, -0.5};
-		mesh_static->mVerts[2].pos = {0.75, 0.75, -0.5};
-		mesh_static->mVerts[3].pos = {0.25, 0.75, -0.5};
-		mesh_static->mFaces.reserve(2);
-		mesh_static->mFaces[0] = {0,2,1};
-		mesh_static->mFaces[1] = {3,2,0};
-	}
-	rnd->push_back(mesh_static);
 	rnd->push_back(mesh); 
 
 	SDL_Event e; bool quit = false;
@@ -87,9 +69,7 @@ int main(int argc, char** argv) {
 					mesh->mVerts[2].col.y = 0.0f;
 					mesh->mVerts[2].col.z = 1.0f;
 
-					mesh->mVerts[3].col.x = 0.33f;
-					mesh->mVerts[3].col.y = 0.33f;
-					mesh->mVerts[3].col.z = 0.33f;
+					mesh->mVerts[3].col.w = 0.33f;
 				}
 				if (e.key.keysym.sym == SDLK_RETURN) {
 					rnd->pop_back();

@@ -50,7 +50,9 @@ void Renderer::InitGL() {
 	mtx.get_mut(2, 3) = -1;
 	mtx.get_mut(3, 2) = -(2 * back * front) / (back - front);
 	mtx.get_mut(3, 3) =  0;
+
+	Matrix moved_mtx = mtx * Matrix::translate3(0,0,0.1);
 	
 	glFrustum(-right, right, -top, top, front, back);
-	glMultMatrixf(*(float**)&mtx);
+	glMultMatrixf(*(float**)&moved_mtx);
 }
