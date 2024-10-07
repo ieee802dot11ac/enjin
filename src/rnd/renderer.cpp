@@ -4,11 +4,14 @@
 #include <SDL2/SDL_opengl.h>
 #include <SDL2/SDL_video.h>
 
+#define WIDTH 1024
+#define HEIGHT 768
+
 Renderer::Renderer() { 
-	mWindow = SDL_CreateWindow("Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL);
+	mWindow = SDL_CreateWindow("Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
 	SDL_assert(mWindow != NULL);
 	mContext = SDL_GL_CreateContext(mWindow);
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, WIDTH, HEIGHT);
 	SDL_ShowWindow(mWindow);
 }
 

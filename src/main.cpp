@@ -7,6 +7,8 @@
 #include <iostream>
 #include <stdint.h>
 
+#define OBJNAME "/tmp/neut.obj"
+
 int main(int argc, char** argv) {
 	SDL_Init(SDL_INIT_EVERYTHING);
 
@@ -15,7 +17,7 @@ int main(int argc, char** argv) {
 
 	Mesh* mesh = new Mesh;
 	{
-		std::ifstream fs; fs.open("/tmp/neut.obj");
+		std::ifstream fs; fs.open(OBJNAME);
 		mesh->ImportOBJ(fs);
 		fs.close();
 		for (Vertex& v : mesh->mVerts) {
@@ -81,17 +83,17 @@ int main(int argc, char** argv) {
 					mesh->mVerts[1].col.y = 1.0f;
 					mesh->mVerts[1].col.z = 0.0f;
 
-					mesh->mVerts[2].col.x = 1.0f;
-					mesh->mVerts[2].col.y = 1.0f;
-					mesh->mVerts[2].col.z = 0.0f;
+					mesh->mVerts[2].col.x = 0.0f;
+					mesh->mVerts[2].col.y = 0.0f;
+					mesh->mVerts[2].col.z = 1.0f;
 
-					//mesh->mVerts[3].col.x = 1.0f;
-					//mesh->mVerts[3].col.y = 1.0f;
-					//mesh->mVerts[3].col.z = 1.0f;	
+					mesh->mVerts[3].col.x = 0.33f;
+					mesh->mVerts[3].col.y = 0.33f;
+					mesh->mVerts[3].col.z = 0.33f;
 				}
 				if (e.key.keysym.sym == SDLK_RETURN) {
 					rnd->pop_back();
-					std::ifstream fs; fs.open("/tmp/neut.obj");
+					std::ifstream fs; fs.open(OBJNAME);
 					mesh->mVerts.clear();
 					mesh->mFaces.clear();
 					mesh->ImportOBJ(fs);
